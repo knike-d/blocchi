@@ -1,3 +1,22 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "some-other-config-you-use",
+    "prettier",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "ignorePatterns": ["*.config.js"],
+  "rules": {
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "order": "asc"
+        }
+      }
+    ]
+  }
 }
