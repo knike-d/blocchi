@@ -1,8 +1,27 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, getSession } from "next-auth/react";
+import { useState } from "react";
 
 const Home: NextPage = ({ session }) => {
+  const [myTweets, setMyTweets] = useState<string[]>([]);
+
+  async function submitTweet(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const tweetText = formData.get("tweet");
+
+    const results = await fetch("/api/twitter/tweet", {
+      method: "POST",
+      body: JSON.stringify({
+        tweetText,
+      }),
+    }).then((res) => res.json());
+
+    setMyTweets([results.data.tweetText, myTweets]);
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -22,6 +41,27 @@ const Home: NextPage = ({ session }) => {
           <button className="rounded border p-2" onClick={() => signIn("twitter")}>
             Twitter ログイン
           </button>
+        )}
+
+        <form onSubmit={submitTweet}>
+          <div className="border">
+            <textarea name="tweet" />
+          </div>
+          <button type="submit" className="rounded border p-2">
+            ツイートする
+          </button>
+        </form>
+
+        {myTweets && (
+          <ul>
+            {myTweets.map((myTweet, index) => {
+              return (
+                <li key={`my-tweet-${index}`}>
+                  <p>{myTweet}</p>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </main>
     </div>
