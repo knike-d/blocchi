@@ -36,32 +36,31 @@ const Home: NextPage = ({ session }: any) => {
             <button className="rounded border p-2" onClick={() => signOut()}>
               Twitter ログアウト
             </button>
+            <form onSubmit={submitTweet}>
+              <div className="border">
+                <textarea name="tweet" />
+              </div>
+              <button type="submit" className="rounded border p-2">
+                ツイートする
+              </button>
+            </form>
+
+            {myTweets && (
+              <ul>
+                {myTweets.map((myTweet, index) => {
+                  return (
+                    <li key={`my-tweet-${index}`}>
+                      <p>{myTweet}</p>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </>
         ) : (
           <button className="rounded border p-2" onClick={() => signIn("twitter")}>
             Twitter ログイン
           </button>
-        )}
-
-        <form onSubmit={submitTweet}>
-          <div className="border">
-            <textarea name="tweet" />
-          </div>
-          <button type="submit" className="rounded border p-2">
-            ツイートする
-          </button>
-        </form>
-
-        {myTweets && (
-          <ul>
-            {myTweets.map((myTweet, index) => {
-              return (
-                <li key={`my-tweet-${index}`}>
-                  <p>{myTweet}</p>
-                </li>
-              );
-            })}
-          </ul>
         )}
       </main>
     </div>
