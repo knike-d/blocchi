@@ -9,16 +9,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const session = await getSession({ req });
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  const twitterTokenDetail = (
+    await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+  )?.twitter as Partial<Record<"oauthToken" | "oauthTokenSecret", string>>;
 
   const client = new TwitterApi({
     appKey: process.env.TWITTER_CONSUMER_KEY,
     appSecret: process.env.TWITTER_CONSUMER_SECRET,
-    accessToken: token.twitter.oauthToken,
-    accessSecret: token.twitter.oauthTokenSecret,
+    accessToken: twitterTokenDetail.oauthToken,
+    accessSecret: twitterTokenDetail.oauthTokenSecret,
   });
 
   const body = JSON.parse(req.body);
@@ -32,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         tweetText: result.full_text,
       },
     });
-  } catch (e) {
+  } catch (e: any) {
     return res.status(400).json({
       status: e.message,
     });

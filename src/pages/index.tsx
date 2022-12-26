@@ -1,12 +1,12 @@
-import type { NextPage } from "next";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, getSession } from "next-auth/react";
 import { useState } from "react";
 
-const Home: NextPage = ({ session }) => {
+const Home: NextPage = ({ session }: any) => {
   const [myTweets, setMyTweets] = useState<string[]>([]);
 
-  async function submitTweet(event) {
+  async function submitTweet(event: any) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -68,7 +68,7 @@ const Home: NextPage = ({ session }) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
   return {
     props: {

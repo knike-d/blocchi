@@ -18,17 +18,20 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account = {}, profile, isNewUser }) {
-      if (account.provider && !token[account.provider]) {
-        token[account.provider] = {};
-      }
+    async jwt({ token, user, account, profile, isNewUser }) {
+      if (account?.provider) {
+        if (!token[account.provider]) {
+          token[account.provider] = {};
+        }
 
-      if (account.oauth_token) {
-        token[account.provider].oauthToken = account.oauth_token;
-      }
+        const oauthTokenDetail = token[account.provider] as Partial<Record<"oauthToken" | "oauthTokenSecret", string>>;
+        if (account.oauth_token) {
+          oauthTokenDetail.oauthToken = account.oauth_token as string;
+        }
 
-      if (account.oauth_token_secret) {
-        token[account.provider].oauthTokenSecret = account.oauth_token_secret;
+        if (account.oauth_token_secret) {
+          oauthTokenDetail.oauthTokenSecret = account.oauth_token_secret as string;
+        }
       }
 
       return token;
